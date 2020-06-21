@@ -5,11 +5,11 @@ Note that it is not necassary at all for the solution to be hidden in any of the
 
 Also the following are just for the sake of documentation and sort of like a guide to the basics that I have learnt and still am.
 
-Also i dont think its easy to learn basics by just going through these writeup once, but i hope it helps with ctfs
+Also i dont think its easy to learn basics by just going through these writeup once, but i hope it helps with ctfs.
 
 
 ## Overview:
-Whenever a challenge in Forensics/Stego challenge involves a png the very first things to look at are:
+Whenever a challenge in Forensics/Stego category involves a png the very first things to look at are:
 1. is it even a png file?
 2. there must be some kinda plain text hidden amidst the binary data maybe?
 3. wonder if the meta data has any info for me...
@@ -121,6 +121,10 @@ Chunk Data- `00 00 01 2c 00 00 00 96 08 02`
 CRC- `5e c3 ba 89 f4`
 
 
+Often they give corrupted images, which have a missing chunk header, or a missing file header or any of these. Suck modifications might show up as a `CRC Error` or any other file error. You can manually correct them with the help of any PNG wiki page.
+
+Or you could try this tool called [PCRT](https://github.com/sherlly/PCRT)
+
 
 ## Hidden files:
 You can look at the hex values in the file and find files. These files can be extracted with the linux `dd`:
@@ -149,6 +153,11 @@ if you want to extract a prticular file, say png:
 binwalk -dd="png image:png"
 ```
 
+## Hidden data in different layers:
+It is possible to hide some kind of data in the form of layers. 
+A PNG file can have many layers but they need not have any interesting data in them.
+But it is always good to check.
+This tool called [stegsolve](https://github.com/Giotino/stegsolve) is a really good tool to view multiple layers. This tool also allows you to save any layer you find has some interesting content.
 
 
 ### Thats It Folks...
