@@ -1,11 +1,11 @@
 # Forensics: Basics of PNG Forensics
 
-Here is a list of things that i would look at if the Forensics challenge involves a png file. 
-Note that it is not necassary at all for the solution to be hidden in any of the following steps cuz every ctf I learn something new.
+Here is a list of things that I would look at if the Forensics challenge involves a png file. 
+Note that it is not necassary at all for the solution to be hidden in any of the following steps cuz every ctf I learn something new, but these are the basic things that come to my mind.
 
 Also the following are just for the sake of documentation and sort of like a guide to the basics that I have learnt and still am.
 
-Also i dont think its easy to learn basics by just going through these writeup once, but i hope it helps with ctfs.
+ I dont think its easy to learn basics by just going through these writeup once, but I sure do hope it helps with ctfs.
 
 
 ## Overview:
@@ -16,7 +16,7 @@ Whenever a challenge in Forensics/Stego category involves a png the very first t
 4. hmm... is there a hidden file in the png... probably another png itself?
 5. what about the different layers of the image? Like green, blue and red...? 
 
-## What do i do with the png?
+## A PNG File:
 the linux command `file` is a very useful tool and tells us a lot about the file. It also gives additional information on image dimenssions and any added extra comments.
 ```
 file <filename>
@@ -32,21 +32,23 @@ They are:
 |               IHDR              |        contains info on image - 'size, depth'       |
 |               IDAT               |  contains info on the images - 'pixel values'    |
 |               IEND              |                           end of a png file                      |
+These chunks along with another chunk called `PLTE` are called `Critical Chunks`
+There are other chunks too that are not necessary for a PNG, which are called `Ancillary Chunks`
 
-Each of these chunks (other than file signature. It isnt a chunk exactly) are again broken down into 4 parts:
+Each of these chunks (other than file signature. It isn't a chunk exactly) are again broken down into 4 parts:
 |   Chunk Length    |   Chunk Type  |   Check data  |   CRC   |
-1. Chunk Length: It tells the system while reading the png file that the next following 'x' bytes are going to be for this particular (Chunk Type) chunk
+1. Chunk Length: It tells the system while reading the png file that the next following 'x' bytes are going to be for this particular chunk.
 2. Chunk Type: tells us which chunk it is.
 3. Chunk data: contains all the data for the particular chunk.
 4. CRC: This has always been a tricky part for me. but to generalise this field i could say that based on a formula the chunk's data is calculated and stored. Its really complicated for me but its like a way to check that the whole chunk has no loss or sorruption of data. so if the chunk's data is read and calculated by the system its checks if its all fine with CRC values
 >I'll try explaining this a little more later on. :)
 
-If you wanna learn all about a PNG file and its structure this [wiki link](https://en.wikipedia.org/wiki/Portable_Network_Graphics) is perfect to help you with it, and if its not good enough we always have google baba for the job...
+If you want to learn all about a PNG file and its structure this [wiki link](https://en.wikipedia.org/wiki/Portable_Network_Graphics) is perfect to help you with it, and if its not good enough we always have google baba for the job...
 
 
 
 ## Strings and metadata:
-The Linux command `strings` prints all the ascii printable data from any file's rawdata and trims anything that isnt printable.
+The Linux command `strings` prints all the ascii printable data from any file's rawdata and trims anything that isn't printable.
 ```
 strings <filename>
 ```
@@ -54,7 +56,7 @@ if the output is way too big:
 ```
 strings <filename> | less
 ```
-Hints or sometimes the flag (maybe hidden as encrypted text) itself are hidden as plain printable text sometimes.
+Hints or sometimes the flag itself are hidden as plain printable text or any for of ecrupted text sometimes.
 Also by viewing all the printable text you will also be able to look out for anything funny, Like probably another file signature would suggest a hidden file sitting right there, and you could take further action to verify if you are on the right path.
 Additionally, look out for strings like 'PNG', 'iHDR', 'iDAT', 'IEND' and so on to make sure you are handling a png file.
 
@@ -69,15 +71,16 @@ Zsteg is another interesting tool that prints out anything out of the box for a 
 ```
 zsteg <filename>
 ```
-It is able to give out some ascii text or file extension it detects that you might have missed earlier.
+It can print out some ascii text or file extension it detects that you might have missed earlier.
 Sometimes you get a message in the image metadata saying "Minor error, ascii text found at so and so location", you can use zsteg and it might be able to print it out if there is anything.
 
 
 
 ## Hexdump:
-most forensics challenges involving viewing the raw data in the file to understand what you are actually dealing wiht here.
-but the raw data cannot be printed out. That is why we use hexdump, a method to dump or putput the raw data of a file in the form of hex numbers as raw data can be represented in the form of hexadecimal numbers.
-wanna know about hexadecimal number system? check out [this](https://www.tutorialspoint.com/hexadecimal-number-system) link right here
+most forensics challenges involving viewing the raw data in the file to understand what you are actually dealing with.
+But the raw data cannot be printed out. That is why we use hexdump, a method to dump or output the raw data of a file in the form of hex numbers as raw data can be represented in the form of hexadecimal numbers.
+>Want to know about hexadecimal number system? check out [this](https://www.tutorialspoint.com/hexadecimal-number-system) link right here
+
 The linux tool xxd does this job:
 ```
 xxd <filename>
@@ -87,10 +90,10 @@ If you want you could also use any gui based hex editor, my favourite being `ghe
 ghex <filename>
 ```
 
-If the file is not being recognised as a png you might wanna look into the initial 8 bytes, which must have the png file header to be able to view it.
+If the file is not being recognised as a png you might wanna look into the initial 8 bytes using a hexeditor, which must have the png file header to be able to view it.
 PNG file header has the following hex values:
 `89 50 4e 47 0d 0a 1a 0a`
-The next 4 bytes are generally, are of this value `00 00 00 0d` which is basically the start of IHDR chunk.
+The next 4 bytes generally, are  `00 00 00 0d` which is basically the start of IHDR chunk.
 
 ##### The IHDR chunk:
 No matter what INDR chunk has to be after the file header, with no other chunk in between.
@@ -120,8 +123,20 @@ Chunk Data- `00 00 01 2c 00 00 00 96 08 02`
 
 CRC- `5e c3 ba 89 f4`
 
+##### The IDAT chunk:
+This is where all the information on the image is stored. The whole image data might be spread out across multiple IDAT chunks, but for a PNG a minimum of 1 IDAT chunk is a must.
 
-Often they give corrupted images, which have a missing chunk header, or a missing file header or any of these. Suck modifications might show up as a `CRC Error` or any other file error. You can manually correct them with the help of any PNG wiki page.
+##### The IEND chunk:
+This chunk marks the end of a PNG file. IEND chunk has 0 bytes of chunk data in it. So it just acts like a End Of File for the system while reading the PNG.
+The IEND chunk looks like this in hexadecimal format:
+`00 00 00 00 49 45 4E 44 AE 42 60 82`
+
+Here is an example from PNG wiki (link mentioned earlier)
+![red_pixel.png](red_pixel.png)
+This is the hex dump of a PNG file for one single red pixel as the image.
+
+
+Often they give corrupted images, which have a missing chunk header, or a missing file header or any of these. Such modifications might show up as a `CRC Error` or any other file error. You can manually correct them with the help of any PNG wiki page.
 
 Or you could try this tool called [PCRT](https://github.com/sherlly/PCRT)
 
