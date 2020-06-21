@@ -26,12 +26,14 @@ file <filename>
 This should tell you whether the given image is a png or anything else. Usually if the challenge gives you a png with a different file signature then the file command just says its plain data.
 A PNG file is broken down into different standard parts called `chunks`. There are specific types of chunks that are a must for any png file.
 They are:
+
 |            Chunk.....          |                       ... and its significance                 |
 |---------------------------|-----------------------------------------------------|
 |       PNG file header     |         tells the system "yes i am a png file"       |
 |               IHDR              |        contains info on image - 'size, depth'       |
 |               IDAT               |  contains info on the images - 'pixel values'    |
 |               IEND              |                           end of a png file                      |
+
 These chunks along with another chunk called `PLTE` are called `Critical Chunks`
 There are other chunks too that are not necessary for a PNG, which are called `Ancillary Chunks`
 
