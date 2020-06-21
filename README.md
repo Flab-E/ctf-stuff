@@ -135,6 +135,7 @@ The IEND chunk looks like this in hexadecimal format:
 
 Here is an example from PNG wiki (link mentioned earlier)
 ![red_pixel.png](red_pixel.png)
+
 This is the hex dump of a PNG file for one single red pixel as the image.
 
 
@@ -177,6 +178,6 @@ But it is always good to check.
 This tool called [stegsolve](https://github.com/Giotino/stegsolve) is a really good tool to view multiple layers. This tool also allows you to save any layer you find has some interesting content.
 
 
-### Thats It Folks...
-This is all i have for now. if ive gone wrong anywhere, please do correct me!
+### That's All Folks...
+This is all I have for now. if I've gone wrong anywhere, please do correct me!
 HAPPY HACKING!
