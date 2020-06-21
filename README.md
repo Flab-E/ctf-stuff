@@ -2,6 +2,7 @@
 
 Here is a list of things that i would look at if the Forensics challenge involves a png file. 
 Note that it is not necassary at all for the solution to be hidden in any of the following steps cuz every ctf I learn something new.
+
 Also the following are just for the sake of documentation and sort of like a guide to the basics that I have learnt and still am.
 
 Also i dont think its easy to learn basics by just going through these writeup once, but i hope it helps with ctfs
@@ -38,9 +39,10 @@ Each of these chunks (other than file signature. It isnt a chunk exactly) are ag
 2. Chunk Type: tells us which chunk it is.
 3. Chunk data: contains all the data for the particular chunk.
 4. CRC: This has always been a tricky part for me. but to generalise this field i could say that based on a formula the chunk's data is calculated and stored. Its really complicated for me but its like a way to check that the whole chunk has no loss or sorruption of data. so if the chunk's data is read and calculated by the system its checks if its all fine with CRC values
->I'll try explaining this a little more towards the end. :)
+>I'll try explaining this a little more later on. :)
 
 If you wanna learn all about a PNG file and its structure this [wiki link](https://en.wikipedia.org/wiki/Portable_Network_Graphics) is perfect to help you with it, and if its not good enough we always have google baba for the job...
+
 
 
 ## Strings and metadata:
@@ -69,6 +71,8 @@ zsteg <filename>
 ```
 It is able to give out some ascii text or file extension it detects that you might have missed earlier.
 Sometimes you get a message in the image metadata saying "Minor error, ascii text found at so and so location", you can use zsteg and it might be able to print it out if there is anything.
+
+
 
 ## Hexdump:
 most forensics challenges involving viewing the raw data in the file to understand what you are actually dealing wiht here.
@@ -107,10 +111,16 @@ followed by a 5 byte CRC data
 
 here is an example of IHDR chunk for an image of size 300x150 (CRC is just for example): 
 `00 00 00 0d 49 48 44 52 00 00 01 2c 00 00 00 96 08 02 5e c3 ba 89 f4`
+
 Chunk Length - `00 00 00 0d`
+
 Chunk Type - `49 48 44 52`
+
 Chunk Data- `00 00 01 2c 00 00 00 96 08 02`
+
 CRC- `5e c3 ba 89 f4`
+
+
 
 ## Hidden files:
 You can look at the hex values in the file and find files. These files can be extracted with the linux `dd`:
